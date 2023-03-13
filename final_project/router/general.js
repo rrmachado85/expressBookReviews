@@ -37,7 +37,7 @@ public_users.post("/register", (req,res) => {
 public_users.get('/',function (req, res) {
 
     const get_books = new Promise((resolve, reject) => {
-        resolve(res.send(JSON.stringify(books, null, 4)));
+        resolve(res.send(JSON.stringify({books}, null, 4)));
       });
 
       get_books.then(() => console.log("Promise for Task 10 resolved"));
@@ -48,7 +48,7 @@ public_users.get('/',function (req, res) {
 public_users.get('/isbn/:isbn',function (req, res) {
 
     const get_users = new Promise((resolve, reject) => {
-        resolve(res.send(JSON.stringify(books[req.params.isbn])));
+        resolve(res.send(JSON.stringify(books[req.params.isbn]),null, 4));
       });
 
     get_users.then(() => console.log("Promise for Task 11 resolved"));
@@ -59,16 +59,29 @@ public_users.get('/isbn/:isbn',function (req, res) {
 public_users.get('/author/:author',function (req, res) {
 
     const get_author = new Promise((resolve, reject) => {
-        let book=[];
-        for (let x in books)
-        {  
-            if ( books[x].author === req.params.author)
-        {
-            book.push(books[x]);
+
+        let bookbyauthor = {
+            "isbn":0,
+            "title":"",
+            "reviews":""
         }
-        resolve(res.send(book));
-    }
-    });
+    
+        let isbn;
+        bookauthors=[];
+        for (isbn in books) {
+            
+            if ( books[isbn].author === req.params.author)
+            {
+                bookbyauthor.isbn = isbn;
+                bookbyauthor.title = books[isbn].title;
+                bookbyauthor.reviews = books[isbn].reviews;
+                bookauthors.push(bookbyauthor);
+            }
+        }
+    
+        resolve(res.send(JSON.stringify({bookauthors})));
+        });
+
 
     get_author.then(() => console.log("Promise for Task 12 resolved"));
     
@@ -79,14 +92,26 @@ public_users.get('/title/:title',function (req, res) {
 
     const get_title = new Promise((resolve, reject) => {
 
-    let book=[];
-    for (let x in books) {
-        if ( books[x].title === req.params.title)
+    let bookbytittle = {
+        "isbn":0,
+        "author":"",
+        "reviews":""
+    }
+
+    let isbn;
+    booktittles=[];
+    for (isbn in books) {
+        
+        if ( books[isbn].title === req.params.title)
         {
-            book.push(books[x]);
+            bookbytittle.isbn = isbn;
+            bookbytittle.author = books[isbn].author;
+            bookbytittle.reviews = books[isbn].reviews;
+            booktittles.push(bookbytittle);
         }
     }
-     resolve(res.send(book));
+
+    resolve(res.send(JSON.stringify({booktittles})));
     });
 
     get_title.then(() => console.log("Promise for Task 13 resolved"));
